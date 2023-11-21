@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { AuthRequests } from '$shared/api/auth';
-	import { Auth } from '$shared/lib/Auth';
 	import { createEventDispatcher, type ComponentEvents } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { AuthRequests } from '$shared/api/auth';
+	import { Auth } from '$shared/lib/Auth';
 
 	interface $$Props {
 		class?: string;

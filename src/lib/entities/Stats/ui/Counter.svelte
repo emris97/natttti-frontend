@@ -23,7 +23,7 @@
 	export let loader: $$Props['loader'];
 	export let count = 0;
 
-	let duration = 20 * 1000;
+	const duration = 20 * 1000;
 
 	export let data: Awaited<ApiOkReturn<ReturnType<Loader>>> | undefined = undefined;
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { userStore } from '$appLayer/stores/user';
+	import { page } from '$app/stores';
 
 	interface $$Props {
 		class?: string;

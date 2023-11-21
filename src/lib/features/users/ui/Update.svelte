@@ -1,16 +1,16 @@
 <script lang="ts">
+	import Button from '@smui/button';
+	import Textfield from '@smui/textfield';
+	import type { ActionResult } from '@sveltejs/kit';
+	import type { ComponentEvents } from 'svelte';
+	import { derived, writable } from 'svelte/store';
 	import { userStore } from '$appLayer/stores/user';
+	import { usersLogoutEnhance, type UserRecord } from '$entities/users';
 	import { UsersSchema } from '$entities/users/model/schema';
 	import { validateSchema } from '$shared/lib/validation';
 	import { Box } from '$shared/ui/Box';
 	import { Form, FormCol, FormRow } from '$shared/ui/Form';
-	import Button from '@smui/button';
-	import type { ComponentEvents } from 'svelte';
-	import Textfield from '@smui/textfield';
-	import type { ActionResult } from '@sveltejs/kit';
-	import { derived, writable } from 'svelte/store';
 	import { applyAction, deserialize, enhance } from '$app/forms';
-	import { usersLogoutEnhance, type UserRecord } from '$entities/users';
 
 	interface $$Props {
 		class?: string;

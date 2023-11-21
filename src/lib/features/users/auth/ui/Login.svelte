@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { applyAction, deserialize } from '$app/forms';
-	import { validateSchema } from '$shared/lib/validation';
-	import { Box } from '$shared/ui/Box';
-	import { Form, FormCol, FormRow } from '$shared/ui/Form';
 	import Button from '@smui/button';
 	import Textfield from '@smui/textfield';
+	import type { ActionResult } from '@sveltejs/kit';
 	import type { ComponentEvents } from 'svelte';
 	import { derived, writable } from 'svelte/store';
-	import type { ActionResult } from '@sveltejs/kit';
-	import Link from '$shared/ui/Link/Link.svelte';
 	import { UsersOAuth2GitHub, UsersOAuth2List } from '$features/users/OAuth2';
+	import { validateSchema } from '$shared/lib/validation';
 	import { PocketBaseAuthSchema } from '$shared/model';
+	import { Box } from '$shared/ui/Box';
+	import { Form, FormCol, FormRow } from '$shared/ui/Form';
+	import Link from '$shared/ui/Link/Link.svelte';
+	import { applyAction, deserialize } from '$app/forms';
 
 	interface $$Props {
 		class?: string;
