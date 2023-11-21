@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	import { toasterStore } from '../lib'
+	import { toasterStore } from '../lib';
 	import type { ToastType } from '../types';
 
 	const typeToColor: Record<ToastType, string | null> = {
@@ -15,7 +15,6 @@
 		states: { toasts },
 		actions: { portal }
 	} = toasterStore;
-
 </script>
 
 <script lang="ts">
@@ -31,8 +30,7 @@
 				onDestroy?.();
 			}
 		};
-	}
-
+	};
 </script>
 
 <!-- @component
@@ -48,7 +46,7 @@ This is a singleton component to manage toasts - should be placed somewhere in t
 			in:fly={{ x: '100%' }}
 			out:fly={{ x: '100%' }}
 			animate:flip={{ duration: 500 }}
-			class='ToasterToast'
+			class="ToasterToast"
 		>
 			<button use:melt={$close(id)} class="ToasterToast__wrapper" style="--color: {toastColor};">
 				<div class="ToasterToast__container">

@@ -3,7 +3,7 @@
 	import { isSvelteStore } from '$shared/lib/Store';
 	import type { MaybeStore } from '$shared/types/Store';
 
-	export let value: MaybeStore<number>
+	export let value: MaybeStore<number>;
 
 	$: progress = isSvelteStore(value) ? value : readable(value);
 </script>

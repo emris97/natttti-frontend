@@ -1,5 +1,3 @@
-import Main from './Main/index.svelte'
-	
-export {
-	Main,
-}
+import Main from './Main/index.svelte';
+
+export { Main };

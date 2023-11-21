@@ -1,5 +1,5 @@
-import PocketBase from 'pocketbase'
+import PocketBase from 'pocketbase';
 
-export const createPocketBaseInstance = () => new PocketBase('https://pocketbase.eveloth.ru')
+export const createPocketBaseInstance = () => new PocketBase('https://pocketbase.eveloth.ru');
 
-export const pb = createPocketBaseInstance()
+export const pb = createPocketBaseInstance();

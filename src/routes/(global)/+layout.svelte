@@ -8,7 +8,6 @@
 	export let data;
 
 	dayjs.locale('ru', ru);
-
 </script>
 
 <Toaster />

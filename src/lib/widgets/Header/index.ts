@@ -3,4 +3,4 @@ export {
 	Menu as HeaderMenu,
 	Link as HeaderLink,
 	LinkList as HeaderLinkList
-} from './ui'
+} from './ui';

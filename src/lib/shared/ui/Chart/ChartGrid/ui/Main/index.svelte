@@ -1,31 +1,40 @@
-<script lang='ts'>
-	import { CategoryScale, Chart, Filler, LinearScale, LineElement, PointElement, Tooltip, type ChartOptions } from "chart.js"
-	import { Line } from "svelte-chartjs"
-	import { assignData } from "../../lib/assignData"
-	import type { ChartGridInstance, IChartGridData } from "../../types"
-	import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm'
-	import { ScaleGenerator } from "../../lib/ScaleGenerator"
-	import dayjs from "dayjs"
-	import { verticalLinePointPlugin } from "$shared/lib/Chart/plugins"
-	import _ from "lodash"
-	import { onMount, tick } from "svelte"
+<script lang="ts">
+	import {
+		CategoryScale,
+		Chart,
+		Filler,
+		LinearScale,
+		LineElement,
+		PointElement,
+		Tooltip,
+		type ChartOptions
+	} from 'chart.js';
+	import { Line } from 'svelte-chartjs';
+	import { assignData } from '../../lib/assignData';
+	import type { ChartGridInstance, IChartGridData } from '../../types';
+	import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
+	import { ScaleGenerator } from '../../lib/ScaleGenerator';
+	import dayjs from 'dayjs';
+	import { verticalLinePointPlugin } from '$shared/lib/Chart/plugins';
+	import _ from 'lodash';
+	import { onMount, tick } from 'svelte';
 
 	interface $$Props {
-		class?:string
-		data:IChartGridData
-		options?:ChartOptions<'line'>
-		register?:Parameters<typeof Chart['register']>[0][]
+		class?: string;
+		data: IChartGridData;
+		options?: ChartOptions<'line'>;
+		register?: Parameters<(typeof Chart)['register']>[0][];
 	}
-	
-	let className = ''
-	export { className as class }
 
-	export let data:$$Props['data']
-	export let options:$$Props['options'] = undefined
-	export let register:$$Props['register'] = []
+	let className = '';
+	export { className as class };
 
-	let chart:ChartGridInstance | undefined = undefined
-	
+	export let data: $$Props['data'];
+	export let options: $$Props['options'] = undefined;
+	export let register: $$Props['register'] = [];
+
+	let chart: ChartGridInstance | undefined = undefined;
+
 	Chart.register(
 		Filler,
 		Tooltip,
@@ -35,15 +44,15 @@
 		PointElement,
 		CategoryScale,
 		...(register || [])
-	)
+	);
 
-	let assignedOptions:ChartOptions<'line'> = {}
-	const defaultOptions:typeof assignedOptions = {
+	let assignedOptions: ChartOptions<'line'> = {};
+	const defaultOptions: typeof assignedOptions = {
 		maintainAspectRatio: false,
 		responsive: true,
 		font: {
 			size: 14,
-			family: 'Montserrat',
+			family: 'Montserrat'
 		},
 		elements: {
 			line: {
@@ -54,12 +63,12 @@
 			point: {
 				borderWidth: 2,
 				radius: 4,
-				hitRadius: 6, 
+				hitRadius: 6,
 				hoverRadius: 6,
 				hoverBorderWidth: 2,
-				hoverBackgroundColor: '#fff',
-			},
-        },
+				hoverBackgroundColor: '#fff'
+			}
+		},
 		interaction: {
 			intersect: false,
 			mode: 'index'
@@ -74,77 +83,85 @@
 				usePointStyle: true,
 				callbacks: {
 					title(points) {
-						return dayjs(points[0].parsed?.x as number).format('MMM DD')
+						return dayjs(points[0].parsed?.x as number).format('MMM DD');
 					},
 					labelPointStyle() {
 						return {
 							pointStyle: 'rectRounded',
 							rotation: 0
-						}	
-					},
+						};
+					}
 				}
 			}
 		},
 		scales: {
 			//@ts-ignore
 			y: new ScaleGenerator()
-					.grid({
-						tickLength: 26
-					})
-					.ticks()
-					.title()
-					.toOptions(),
+				.grid({
+					tickLength: 26
+				})
+				.ticks()
+				.title()
+				.toOptions(),
 			//@ts-ignore
 			x: new ScaleGenerator()
-					.grid({
-						tickLength: 12
-					})
-					.time()
-					.ticks({
-						// callback(value, index) {
-						// 	console.log({value})
-						// 	return `test<br/>`
-						// },
-					})
-					.title()
-					.toOptions(),
+				.grid({
+					tickLength: 12
+				})
+				.time()
+				.ticks({
+					// callback(value, index) {
+					// 	console.log({value})
+					// 	return `test<br/>`
+					// },
+				})
+				.title()
+				.toOptions(),
 			//@ts-ignore
-			xMonths: (options?.scales.x.type === 'time' ? new ScaleGenerator({type: 'time'})
-					.grid({
-						tickLength: 2,
-						drawOnChartArea: false,
-					})
-					.time({unit: 'month'})
-					.ticks({
-						align: 'center',
-						callback(value) {
-							const offset = dayjs(value).utcOffset()
-							return dayjs(+value - offset).format('MMM YYYY')
-						},
-					})
-					.title()
-					.toOptions() : undefined)
+			xMonths:
+				options?.scales.x.type === 'time'
+					? new ScaleGenerator({ type: 'time' })
+							.grid({
+								tickLength: 2,
+								drawOnChartArea: false
+							})
+							.time({ unit: 'month' })
+							.ticks({
+								align: 'center',
+								callback(value) {
+									const offset = dayjs(value).utcOffset();
+									return dayjs(+value - offset).format('MMM YYYY');
+								}
+							})
+							.title()
+							.toOptions()
+					: undefined
 		}
-	}
+	};
 
 	//@ts-ignore
-	$: assignedOptions = _.merge(defaultOptions, options)
+	$: assignedOptions = _.merge(defaultOptions, options);
 
 	const controller = {
 		getData: assignData
-	}
+	};
 
+	let assignedData = controller.getData(_.cloneDeep(data), chart);
 
-	let assignedData = controller.getData(_.cloneDeep(data), chart)
-	
 	onMount(() => {
 		tick().then(() => {
-			assignedData = controller.getData(_.cloneDeep(data), chart)
-		})
-	})
+			assignedData = controller.getData(_.cloneDeep(data), chart);
+		});
+	});
 
-	$: assignedData = controller.getData(_.cloneDeep(data), chart)
-
+	$: assignedData = controller.getData(_.cloneDeep(data), chart);
 </script>
 
-<Line bind:chart data={assignedData} options={assignedOptions} width='100%' height='100%' class={`ChartGrid ${className}`}/>
+<Line
+	bind:chart
+	data={assignedData}
+	options={assignedOptions}
+	width="100%"
+	height="100%"
+	class={`ChartGrid ${className}`}
+/>

@@ -1,144 +1,148 @@
-<script lang='ts'>
-	import type { IToken } from "$shared/types/token";
-	import { Box } from "$shared/ui/Box";
-	import IconButton, { Icon } from '@smui/icon-button'
-	import { CopyText } from "$shared/ui/CopyText";
-	import { writable } from "svelte/store";
-	import { TokenFields } from "$entities/Token";
-	import {slide} from 'svelte/transition'
-	import { CONFIG } from "$shared/config";
-	import Button from "@smui/button/src/Button.svelte";
-	import { TokenHelper } from "$shared/lib/TokenHelper";
-	import { TokenRequests } from "$shared/api/token";
-	import { createEventDispatcher } from "svelte";
+<script lang="ts">
+	import type { IToken } from '$shared/types/token';
+	import { Box } from '$shared/ui/Box';
+	import IconButton, { Icon } from '@smui/icon-button';
+	import { CopyText } from '$shared/ui/CopyText';
+	import { writable } from 'svelte/store';
+	import { TokenFields } from '$entities/Token';
+	import { slide } from 'svelte/transition';
+	import { CONFIG } from '$shared/config';
+	import Button from '@smui/button/src/Button.svelte';
+	import { TokenHelper } from '$shared/lib/TokenHelper';
+	import { TokenRequests } from '$shared/api/token';
+	import { createEventDispatcher } from 'svelte';
 
 	interface $$Props {
-		class?:string
-		tag?:string
-		data:IToken
+		class?: string;
+		tag?: string;
+		data: IToken;
 	}
 
 	interface $$Events {
 		remove: CustomEvent<{
-			data: $$Props['data']
-		}>
+			data: $$Props['data'];
+		}>;
 		update: CustomEvent<{
-			data: IToken
-		}>
+			data: IToken;
+		}>;
 	}
-	
-	let className = ''
-	export { className as class }
-	export let tag:$$Props['tag'] = 'div'
-	export let data:$$Props['data']
 
-	const dispatch = createEventDispatcher()
+	let className = '';
+	export { className as class };
+	export let tag: $$Props['tag'] = 'div';
+	export let data: $$Props['data'];
+
+	const dispatch = createEventDispatcher();
 
 	const state = writable({
 		edit: false,
 		fetching: false
-	})
+	});
 
-	const fields = writable<typeof data>({...data})
-		
-	$: fields.set({...data})
+	const fields = writable<typeof data>({ ...data });
 
-	$: tokenRequests = new TokenRequests()
+	$: fields.set({ ...data });
+
+	$: tokenRequests = new TokenRequests();
 
 	const controller = {
 		editToggle(newState = !$state.edit) {
-			$state.edit = newState
-			controller.clearEdit()
+			$state.edit = newState;
+			controller.clearEdit();
 		},
 		clearEdit() {
-			fields.set({...data})
+			fields.set({ ...data });
 		},
 		async remove() {
-			if ($state.fetching) return
-			$state.fetching = true
-			controller.editToggle(false)
+			if ($state.fetching) return;
+			$state.fetching = true;
+			controller.editToggle(false);
 			try {
-				const res = await tokenRequests.delete(+data.id)
+				const res = await tokenRequests.delete(+data.id);
 
 				if (res._error) {
-					throw new Error(res.title)
+					throw new Error(res.title);
 				}
 
 				dispatch('remove', {
 					data
-				})
-
+				});
 			} catch (error) {
-				console.error(error)
+				console.error(error);
 			} finally {
-				$state.fetching = false
+				$state.fetching = false;
 			}
 		},
 		async update() {
-			if ($state.fetching) return
-			$state.fetching = true
-			
+			if ($state.fetching) return;
+			$state.fetching = true;
+
 			try {
 				const res = await tokenRequests.update({
 					...$fields
-				})
+				});
 
 				if (res._error) {
-					throw new Error(res.title)
+					throw new Error(res.title);
 				}
 
-				controller.editToggle(false)
+				controller.editToggle(false);
 
 				dispatch('update', {
 					data: res
-				})
+				});
 			} catch (error) {
-				console.error(error)
+				console.error(error);
 			} finally {
-				$state.fetching = false
+				$state.fetching = false;
 			}
 		}
-	}
-	
+	};
+
 	const handler = {
 		editClick() {
-			controller.editToggle()
+			controller.editToggle();
 		},
 		removeClick() {
-			controller.remove()
+			controller.remove();
 		},
 		updateClick() {
-			controller.update()
+			controller.update();
 		}
-	}
-
+	};
 </script>
 
-<Box {tag} size='m' class={`Token ${className} ${$state.edit ? 'Token_edit' : ''}`}>
+<Box {tag} size="m" class={`Token ${className} ${$state.edit ? 'Token_edit' : ''}`}>
 	<div class="Token__header">
-		<h3 class='Token__name'><small>{TokenHelper.getAccessTypeText(data.accessType)}</small>{data.grantedTo}</h3>
+		<h3 class="Token__name">
+			<small>{TokenHelper.getAccessTypeText(data.accessType)}</small>{data.grantedTo}
+		</h3>
 		<div class="Token__token">
-			<CopyText text={data.accessToken}/>
+			<CopyText text={data.accessToken} />
 			<small>До: {new Date(data.expiresAt).toLocaleDateString()}</small>
 		</div>
 		<div class="Token__controls">
-			<IconButton size='button' on:click={handler.editClick}>
-				<Icon class='material-icons'>
-					edit
-				</Icon>
+			<IconButton size="button" on:click={handler.editClick}>
+				<Icon class="material-icons">edit</Icon>
 			</IconButton>
-			<IconButton size='button' on:click={handler.removeClick}>
-				<Icon class='material-icons'>
-					delete
-				</Icon>
+			<IconButton size="button" on:click={handler.removeClick}>
+				<Icon class="material-icons">delete</Icon>
 			</IconButton>
 		</div>
 	</div>
 	{#if $state.edit}
 		<div class="Token__footer" transition:slide|local={CONFIG.TRANSITION}>
-			<TokenFields bind:expiresAt={$fields.expiresAt} bind:accessType={$fields.accessType} bind:grantedTo={$fields.grantedTo}>
-				<svelte:fragment slot='button' let:valid>
-					<Button variant='unelevated' disabled={!valid || $state.fetching} on:click={handler.updateClick}>
+			<TokenFields
+				bind:expiresAt={$fields.expiresAt}
+				bind:accessType={$fields.accessType}
+				bind:grantedTo={$fields.grantedTo}
+			>
+				<svelte:fragment slot="button" let:valid>
+					<Button
+						variant="unelevated"
+						disabled={!valid || $state.fetching}
+						on:click={handler.updateClick}
+					>
 						Сохранить
 					</Button>
 				</svelte:fragment>
@@ -147,7 +151,7 @@
 	{/if}
 </Box>
 
-<style lang='sass'>
+<style lang="sass">
 	.Token
 		$edit: #{&}_edit
 		&__header

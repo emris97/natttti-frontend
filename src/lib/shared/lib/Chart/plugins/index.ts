@@ -1,4 +1,2 @@
-import { verticalLinePoint as verticalLinePointPlugin } from './lib/verticalLinePoint'
-export {
-    verticalLinePointPlugin
-}
+import { verticalLinePoint as verticalLinePointPlugin } from './lib/verticalLinePoint';
+export { verticalLinePointPlugin };

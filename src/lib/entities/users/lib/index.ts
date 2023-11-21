@@ -1,1 +1,1 @@
-export * from './logoutEnhance'
+export * from './logoutEnhance';

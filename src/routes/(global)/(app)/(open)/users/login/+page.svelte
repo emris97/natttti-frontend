@@ -5,13 +5,13 @@
 </script>
 
 <svelte:head>
-    <title>{CONFIG.APP.NAME} | Вход</title>
+	<title>{CONFIG.APP.NAME} | Вход</title>
 </svelte:head>
 
 <SectionContainer>
-    <SectionTitle>
-        <h2>Вход</h2>
-        <p>Очередь не задерживаем.</p>
-    </SectionTitle>
-    <UsersAuthLogin/>
+	<SectionTitle>
+		<h2>Вход</h2>
+		<p>Очередь не задерживаем.</p>
+	</SectionTitle>
+	<UsersAuthLogin />
 </SectionContainer>

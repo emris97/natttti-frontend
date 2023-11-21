@@ -15,9 +15,4 @@ const createToast = (...args: Parameters<typeof addToast>) => {
 };
 const closeToast = removeToast;
 
-export {
-	closeToast,
-	createToast,
-	toasterStore,
-	updateToast
-};
+export { closeToast, createToast, toasterStore, updateToast };

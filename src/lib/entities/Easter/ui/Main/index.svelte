@@ -1,75 +1,78 @@
-<script lang='ts'>
-	import { writable } from "svelte/store";
-	import { browser } from "$app/environment";
-	import { onDestroy, onMount } from "svelte";
-	import { EasterContext } from "$entities/Easter/model";
+<script lang="ts">
+	import { writable } from 'svelte/store';
+	import { browser } from '$app/environment';
+	import { onDestroy, onMount } from 'svelte';
+	import { EasterContext } from '$entities/Easter/model';
 	//@ts-ignore
-	import devtools from 'devtools-detect'
+	import devtools from 'devtools-detect';
 
 	interface $$Props {
-		class?:string
+		class?: string;
 	}
-	
-	let className = ''
-	export { className as class }
 
-	let mounted = false
+	let className = '';
+	export { className as class };
 
-	const easterContext = new EasterContext().set(writable({
-		date: new Date(),
-		isDevToolsOpen: false,
-		isDevToolsChange: false
-	}))
+	let mounted = false;
 
+	const easterContext = new EasterContext().set(
+		writable({
+			date: new Date(),
+			isDevToolsOpen: false,
+			isDevToolsChange: false
+		})
+	);
 
-
-	const controller:{
-		timeInterval?:ReturnType<typeof setInterval>
-		startTimeInterval:VoidFunction
-		stopTimeInterval:VoidFunction
+	const controller: {
+		timeInterval?: ReturnType<typeof setInterval>;
+		startTimeInterval: VoidFunction;
+		stopTimeInterval: VoidFunction;
 	} = {
 		timeInterval: undefined,
 		startTimeInterval() {
-			this.stopTimeInterval()
+			this.stopTimeInterval();
 			this.timeInterval = setInterval(() => {
-				$easterContext && ($easterContext.date = new Date())
-			}, 1000)
+				$easterContext && ($easterContext.date = new Date());
+			}, 1000);
 		},
 		stopTimeInterval() {
-			clearInterval(this.timeInterval)
+			clearInterval(this.timeInterval);
 		}
-	}
+	};
 
 	const handler = {
-		devToolsChange(e:CustomEvent<typeof devtools>, change?:boolean) {
+		devToolsChange(e: CustomEvent<typeof devtools>, change?: boolean) {
 			if ($easterContext) {
-				$easterContext.isDevToolsOpen = e.detail.isOpen
-				$easterContext.isDevToolsChange = change ?? true
+				$easterContext.isDevToolsOpen = e.detail.isOpen;
+				$easterContext.isDevToolsChange = change ?? true;
 			}
 		}
-	}
-	
+	};
+
 	onMount(() => {
-		mounted = true
-		controller.startTimeInterval()
+		mounted = true;
+		controller.startTimeInterval();
 		if (browser) {
-			handler.devToolsChange(new CustomEvent('devtoolschange', {
-				detail: devtools
-			}), false)
+			handler.devToolsChange(
+				new CustomEvent('devtoolschange', {
+					detail: devtools
+				}),
+				false
+			);
 			//@ts-ignore
-			window.addEventListener('devtoolschange', handler.devToolsChange)
+			window.addEventListener('devtoolschange', handler.devToolsChange);
 		}
-	})
+	});
 
 	onDestroy(() => {
-		controller.stopTimeInterval()
+		controller.stopTimeInterval();
 		if (browser) {
 			//@ts-ignore
-			window.removeEventListener('devtoolschange', handler.devToolsChange)
+			window.removeEventListener('devtoolschange', handler.devToolsChange);
 		}
-	})
-	
+	});
 </script>
+
 {#if !$easterContext?.isDevToolsChange && mounted}
-	<slot/>
+	<slot />
 {/if}
